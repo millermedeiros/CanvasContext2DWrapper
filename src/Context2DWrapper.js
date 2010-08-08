@@ -1,11 +1,14 @@
 /*
  * Canvas Context2D Wrapper
- * - enable method chaining
+ * - enable method chaining without overwritting any native objects/prototypes.
  * @author Miller Medeiros <http://millermedeiros.com>
- * @version 0.1 (2010/08/07)
+ * @version 0.2 (2010/08/08)
  */
 
-(function(){
+ /**
+  * @param {Object} namespace	Namespace of the Context2DWrapper.
+  */
+(function(namespace){
 
 	var 
 		/** @private {array} Canvas Context2D methods */
@@ -51,7 +54,7 @@
 	 * @class Canvas Context2D Wrapper.
 	 * @param {CanvasRenderingContext2D} context	Canvas Context2D.
 	 */
-	this.Context2DWrapper = function(context){
+	namespace.Context2DWrapper = function(context){
 		
 		var n = _context2DMethods.length,
 			curProp;
@@ -69,7 +72,7 @@
 			 * @param {...*} Native CanvasRenderingContext2D method parameters.
 			 * @return {Context2DWrapper}
 			 */
-			this[curProp] = chainMethod(context[curProp], this.context, this);
+			this[curProp] = chainMethod(context[curProp], context, this);
 		}
 		
 		//convert properties into methods (getter and setter)
@@ -80,8 +83,8 @@
 			 * @param {*} [value]	Property value, if `undefined` gets value, if not `undefined` sets value.
 			 * @return {Context2DWrapper}
 			 */
-			this[curProp] = chainProperty(curProp, this.context, this);
+			this[curProp] = chainProperty(curProp, context, this);
 		}
 	};
 	
-}());
+}(this));

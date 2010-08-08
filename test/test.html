@@ -18,9 +18,14 @@
 			
 			//console.log(ctx);
 
+			//chainable methods
 			ctx.fillStyle('#F00').fillRect(25,25,100,100).fillStyle('#0F0').fillRect(50,50,100,100).fillStyle('#00F');
-
-			context.fillRect(75,75,100,100);
+			
+			//still have access to native context (that doesn't allow chaining and doesn't have getter/setter methods for properties)
+			ctx.context.fillRect(75,75,100,100);
+			ctx.context.fillStyle = '#FF0';
+			ctx.context.fillRect(100,100,100,100);
+			
 		</script> 
 	</body> 
 </html>
