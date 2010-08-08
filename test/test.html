@@ -1,0 +1,26 @@
+<!doctype html> 
+<html> 
+	<head> 
+		<title>Test Context2DWrapper</title> 
+		<meta charset="utf-8" /> 
+	</head> 
+	<body> 
+		<canvas id="c"></canvas>
+		<script src="../src/Context2DWrapper.js"></script>
+		<script> 
+			var canvas = document.getElementById('c');
+			var context = canvas.getContext('2d');
+
+			canvas.width = 500;
+			canvas.height = 500;
+
+			var ctx = new Context2DWrapper(context);
+			
+			//console.log(ctx);
+
+			ctx.fillStyle('#F00').fillRect(25,25,100,100).fillStyle('#0F0').fillRect(50,50,100,100).fillStyle('#00F');
+
+			context.fillRect(75,75,100,100);
+		</script> 
+	</body> 
+</html>
