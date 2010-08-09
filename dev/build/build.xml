@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<project name="Context2DWrapper" default="all" basedir="../../">
+	<description>
+		Build Task. Unify files, compress, validate, generate documentation and distribution files.
+	</description>
+	
+	<!-- properties -->
+	
+    <property file="dev/build/build.properties"/>
+	
+	<!-- custom tasks -->
+	
+	<taskdef name="jslint" classname="com.googlecode.jslint4java.ant.JSLintTask" classpath="${jslint.jar}" />
+	
+	<!-- targets -->
+	
+	<target name="purge" description="Delete destination directories.">
+		<delete dir="${deploy.dir}" />
+    </target>
+	
+	<target name="-mkdirs" description="Make required dirs.">
+		<mkdir dir="${deploy.dir}"/>
+		<mkdir dir="${dist.dir}"/>
+	</target>
+
+	<target name="concat" depends="-mkdirs" description="Concatenate Files and outputs uncompressed version.">
+		<echo message="Building ${dist.name}..." />
+		<concat destfile="${dist.dir}/${dist.name}" fixlastline="yes" eol="unix">
+            <fileset file="${src.dir}/Context2DWrapper.js" />
+        </concat>
+		<replace file="${dist.dir}/${dist.name}" token="::version_number::" value="${version.number}"/>
+		<replace file="${dist.dir}/${dist.name}" token="::version_date::" value="${version.date}"/>
+		<echo message="${dist.name} built." />
+	</target>
+	
+	<target name="minify" description="Build minified version.">
+		<echo message="Building ${dist.min.name}..." />
+		<apply executable="java" parallel="false" verbose="true" dest="${dist.dir}">
+		    <fileset dir="${dist.dir}">
+		        <include name="${dist.name}" />
+		    </fileset>
+		    <arg line="-jar" />
+		    <arg path="${yuicompressor.jar}" />
+		    <arg value="--charset" />
+		    <arg value="ANSI" />
+		    <arg value="-o" />
+		    <targetfile />
+		    <mapper type="glob" from="${dist.name}" to="${dist.min.name}" />
+		</apply>
+		<echo message="${dist.min.name} built." />
+	</target>
+	
+	<target name="lint" description="Validate source code using JSLint.">
+		<jslint haltOnFailure="false" options="browser, onevar, undef, newcap, immed">
+			<formatter type="plain" />
+			<predef>window</predef>
+			<fileset dir="${dist.dir}" includes="*.js" excludes="*.min.js" />
+		</jslint>
+	</target>
+	
+	<target name="all" depends="purge, -mkdirs, concat, lint, minify">
+		<echo message="Build Complete." />
+	</target>
+	
+</project>

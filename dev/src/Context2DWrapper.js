@@ -1,8 +1,8 @@
-/*
- * Canvas Context2D Wrapper
- * - enable method chaining without overwritting any native objects/prototypes.
+/*!
+ * Canvas Context2D Wrapper <http://github.com/millermedeiros/CanvasContext2DWrapper>
+ * Released under WTFPL <http://sam.zoy.org/wtfpl/>.
  * @author Miller Medeiros <http://millermedeiros.com>
- * @version 0.2 (2010/08/08)
+ * @version ::version_number:: ::version_date::
  */
 
  /**
@@ -22,7 +22,7 @@
 	 * @param {Function} fn	Function to be modified.
 	 * @param {Object} scope	Scope where function will be called.
 	 * @param {Object} chainReturn	Object returned to enable chaining.
-	 * @return {Function}
+	 * @return {Function} Chainable function.
 	 * @private
 	 */
 	function chainMethod(fn, scope, chainReturn){
@@ -52,9 +52,9 @@
 	
 	/**
 	 * @class Canvas Context2D Wrapper.
-	 * @param {CanvasRenderingContext2D} context	Canvas Context2D.
+	 * @param {CanvasRenderingContext2D} target	Canvas Context2D that will be wrapped.
 	 */
-	namespace.Context2DWrapper = function(context){
+	namespace.Context2DWrapper = function(target){
 		
 		var n = _context2DMethods.length,
 			curProp;
@@ -63,27 +63,19 @@
 		 * Reference to Canvas Rendering Context 2D.
 		 * @type CanvasRenderingContext2D 
 		 */
-		this.context = context;
+		this.context = target;
 		
 		//wrap methods
 		while(n--){
 			curProp = _context2DMethods[n];
-			/**
-			 * @param {...*} Native CanvasRenderingContext2D method parameters.
-			 * @return {Context2DWrapper}
-			 */
-			this[curProp] = chainMethod(context[curProp], context, this);
+			this[curProp] = chainMethod(target[curProp], target, this);
 		}
 		
-		//convert properties into methods (getter and setter)
+		//convert properties into methods (getter/setter)
 		n = _context2DProperties.length;
 		while(n--){
 			curProp = _context2DProperties[n];
-			/**
-			 * @param {*} [value]	Property value, if `undefined` gets value, if not `undefined` sets value.
-			 * @return {Context2DWrapper}
-			 */
-			this[curProp] = chainProperty(curProp, context, this);
+			this[curProp] = chainProperty(curProp, target, this);
 		}
 	};
 	
